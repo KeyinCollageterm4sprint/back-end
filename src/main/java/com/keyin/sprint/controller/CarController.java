@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import java.util.List;
 
 @RestController
@@ -30,8 +31,12 @@ public class CarController {
     @GetMapping("/search")
     public ResponseEntity<List<Car>> searchCars(
             @RequestParam(required = false) String make,
-            @RequestParam(required = false) String model) {
-        List<Car> cars = carService.searchCars(make, model);
+            @RequestParam(required = false) String model,
+            @RequestParam(required = false) String year,
+            @RequestParam(required = false) String colour,
+            @RequestParam(required = false) Integer mileage,
+            @RequestParam(required = false) String vin) {
+        List<Car> cars = carService.searchCars(make, model, year, colour, mileage, vin);
         return ResponseEntity.ok(cars);
     }
 }
