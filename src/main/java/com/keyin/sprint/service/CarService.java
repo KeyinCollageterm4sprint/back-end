@@ -1,43 +1,47 @@
 package com.keyin.sprint.service;
 
 import com.keyin.sprint.model.Car;
-import com.keyin.sprint.model.SearchHistory;
 import com.keyin.sprint.repository.CarRepository;
-import com.keyin.sprint.repository.SearchHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
+import jakarta.persistence.criteria.Predicate;  // Ensure this matches your JPA setup
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class CarService {
 
     private final CarRepository carRepository;
-    private final SearchHistoryRepository searchHistoryRepository;
-    private final UserService userService; // Assuming you have a UserService to manage user-related operations
 
     @Autowired
-    public CarService(CarRepository carRepository, SearchHistoryRepository searchHistoryRepository, UserService userService) {
+    public CarService(CarRepository carRepository) {
         this.carRepository = carRepository;
-        this.searchHistoryRepository = searchHistoryRepository;
-        this.userService = userService;
     }
 
-    public List<Car> searchCars(String username, String make, String model, String year, Integer mileage, String colour) {
-        Long userId = userService.findUserIdByUsername(username); // Obtain user ID from username
-        if(userId != null) {
-            logSearch(userId, String.format("make: %s, model: %s, year: %s, colour: %s", make, model, year, colour));
-            return carRepository.findByMakeAndModelAndYearAndColour(make, model, year, colour);
-        }
-        return List.of(); // Return empty list if user ID is not found
+    public List<Car> searchCars(String make, String model, String year, String colour, Integer mileage) {
+        return carRepository.findAll((Specification<Car>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (make != null && !make.isBlank()) {
+                predicates.add(criteriaBuilder.equal(root.get("make"), make));
+            }
+            if (model != null && !model.isBlank()) {
+                predicates.add(criteriaBuilder.equal(root.get("model"), model));
+            }
+            if (year != null && !year.isBlank()) {
+                predicates.add(criteriaBuilder.equal(root.get("year"), year));
+            }
+            if (colour != null && !colour.isBlank()) {
+                predicates.add(criteriaBuilder.equal(root.get("colour"), colour));
+            }
+            if (mileage != null) {
+                predicates.add(criteriaBuilder.equal(root.get("mileage"), mileage));
+            }
+            return criteriaBuilder.and(predicates.toArray(new Predicate[0]));
+        });
     }
+
     public List<Car> getAllCars() {
         return carRepository.findAll();
-    }
-
-    private void logSearch(Long userId, String searchTerm) {
-        SearchHistory searchHistory = new SearchHistory(userId, searchTerm, LocalDateTime.now());
-        searchHistoryRepository.save(searchHistory);
     }
 }

@@ -5,25 +5,19 @@ import com.keyin.sprint.repository.SearchHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class SearchHistoryService {
 
-    private final SearchHistoryRepository searchHistoryRepository;
+    @Autowired
+    private SearchHistoryRepository searchHistoryRepository;
 
     @Autowired
-    public SearchHistoryService(SearchHistoryRepository searchHistoryRepository) {
-        this.searchHistoryRepository = searchHistoryRepository;
-    }
+    private UserService userService;  // UserService needs to provide the user's ID
 
-    public void logSearch(Long userId, String searchQuery) {
-        SearchHistory searchHistory = new SearchHistory(userId, searchQuery, LocalDateTime.now());
-        searchHistoryRepository.save(searchHistory);
-    }
-
-    public List<SearchHistory> getUserSearchHistory(Long userId) {
+    public List<SearchHistory> getUserSearchHistory(String username) {
+        Long userId = userService.findUserIdByUsername(username); // Fetch user ID from username
         return searchHistoryRepository.findByUserId(userId);
     }
 }

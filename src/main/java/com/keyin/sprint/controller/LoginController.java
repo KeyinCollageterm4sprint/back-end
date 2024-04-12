@@ -9,10 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 @RestController
 @RequestMapping("/api")
+@SessionAttributes("user")
 public class LoginController {
 
     private final LoginService loginService;
@@ -26,9 +27,10 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Login loginDetails) {
-        boolean isAuthenticated = loginService.authenticate(loginDetails.getUsername(), loginDetails.getPassword());
+        Login loginUser = loginService.authenticate(loginDetails.getUsername(), loginDetails.getPassword());
 
-        if (isAuthenticated) {
+        if (loginUser != null) {
+            // Session is automatically created and managed by Spring Security
             return ResponseEntity.ok("User authenticated successfully");
         } else {
             return ResponseEntity.badRequest().body("Invalid username or password");
@@ -48,5 +50,4 @@ public class LoginController {
             return ResponseEntity.badRequest().body("Username already exists");
         }
     }
-
 }

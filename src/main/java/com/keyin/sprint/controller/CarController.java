@@ -34,9 +34,11 @@ public class CarController {
             @RequestParam(required = false) String model,
             @RequestParam(required = false) String year,
             @RequestParam(required = false) String colour,
-            @RequestParam(required = false) Integer mileage,
-            @RequestParam(required = false) String vin) {
-        List<Car> cars = carService.searchCars(make, model, year, colour, mileage, vin);
+            @RequestParam(required = false) Integer mileage) {
+        List<Car> cars = carService.searchCars(make, model, year, colour, mileage);
+        if (cars.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(cars);
     }
 }

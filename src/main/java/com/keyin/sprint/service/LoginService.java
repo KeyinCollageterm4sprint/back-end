@@ -32,8 +32,11 @@ public class LoginService {
         return null; // or throw an exception if user already exists
     }
 
-    public boolean authenticate(String username, String rawPassword) {
+    public Login authenticate(String username, String rawPassword) {
         Login login = loginRepository.findByUsername(username);
-        return login != null && passwordEncoder.matches(rawPassword, login.getPassword());
+        if (login != null && passwordEncoder.matches(rawPassword, login.getPassword())) {
+            return login; // return the login object if password matches
+        }
+        return null;
     }
 }
