@@ -24,19 +24,19 @@ public class LoginController {
         this.loginService = loginService;
         this.passwordEncoder = passwordEncoder;
     }
-
+//Login Handle
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Login loginDetails) {
         Login loginUser = loginService.authenticate(loginDetails.getUsername(), loginDetails.getPassword());
 
         if (loginUser != null) {
-            // Session is automatically created and managed by Spring Security
+
             return ResponseEntity.ok("User authenticated successfully");
         } else {
             return ResponseEntity.badRequest().body("Invalid username or password");
         }
     }
-
+//Where a user can register
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody Login loginDetails) {
         if (!loginService.userExists(loginDetails.getUsername())) {

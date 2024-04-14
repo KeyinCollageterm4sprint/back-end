@@ -29,14 +29,14 @@ public class SecurityConfig {
                         .requestMatchers("/api/login", "/api/register", "/api/cars/**","/api/history").permitAll()  // Allow unauthenticated access to login and register
                         .anyRequest().authenticated()  // Require authentication for all other requests
                 )
-                .formLogin().disable()  // Disable form login
-                .httpBasic().disable()  // Disable HTTP Basic authentication as it might not be needed
+                .formLogin().disable()
+                .httpBasic().disable()
                 .logout(logout -> logout
                         .logoutUrl("/api/logout")
                         .logoutSuccessUrl("/api/login?logout=true")
                 )
-                .csrf(csrf -> csrf.disable())  // Disable CSRF protection
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()));  // Apply CORS configuration
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
         return http.build();
     }

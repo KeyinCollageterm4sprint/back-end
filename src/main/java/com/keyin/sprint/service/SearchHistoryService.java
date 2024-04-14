@@ -14,10 +14,10 @@ public class SearchHistoryService {
     private SearchHistoryRepository searchHistoryRepository;
 
     @Autowired
-    private UserService userService;  // UserService needs to provide the user's ID
+    private UserService userService;
 
     public List<SearchHistory> getUserSearchHistory(String username) {
-        Long userId = userService.findUserIdByUsername(username); // Fetch user ID from username
+        Long userId = userService.findUserIdByUsername(username);
         return searchHistoryRepository.findByUserId(userId);
     }
 }

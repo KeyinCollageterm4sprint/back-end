@@ -21,21 +21,21 @@ public class LoginService {
     public boolean userExists(String username) {
         return loginRepository.findByUsername(username) != null;
     }
-
+//Allows user to register and will throw error if username already exisit in Database
     public Login registerNewUser(String username, String password) {
         if (!userExists(username)) {
             Login newUser = new Login();
             newUser.setUsername(username);
-            newUser.setPassword(passwordEncoder.encode(password)); // Encode password
-            return loginRepository.save(newUser); // Save new user with encoded password
+            newUser.setPassword(passwordEncoder.encode(password));
+            return loginRepository.save(newUser);
         }
-        return null; // or throw an exception if user already exists
+        return null;
     }
 
     public Login authenticate(String username, String rawPassword) {
         Login login = loginRepository.findByUsername(username);
         if (login != null && passwordEncoder.matches(rawPassword, login.getPassword())) {
-            return login; // return the login object if password matches
+            return login;
         }
         return null;
     }

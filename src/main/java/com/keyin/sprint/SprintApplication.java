@@ -16,5 +16,5 @@ public class SprintApplication {
 		SpringApplication.run(SprintApplication.class, args);
 	}
 
-	// No changes needed here unless you have specific beans to configure
+
 }
